@@ -23,7 +23,10 @@ import {
   CheckCircle,
   ArrowRight,
   User,
-  X
+  X,
+  Plus,
+  Minus,
+  UserPlus
 } from 'lucide-react';
 
 
@@ -39,7 +42,8 @@ function App() {
     email: '',
     phone: '',
     paymentMethod: 'pix',
-    installments: 1
+    installments: 1,
+    additionalCompanions: 0 // Novo campo para acompanhantes adicionais
   });
   const [isProcessing, setIsProcessing] = useState(false);
   const [inscriptionSuccess, setInscriptionSuccess] = useState(false);
@@ -56,10 +60,31 @@ function App() {
     }, 100);
   };
 
-  // Cálculo de preço
+  // Funções para controlar acompanhantes
+  const increaseCompanions = () => {
+    if (formData.additionalCompanions < 5) {
+      setFormData(prev => ({ 
+        ...prev, 
+        additionalCompanions: prev.additionalCompanions + 1 
+      }));
+    }
+  };
+
+  const decreaseCompanions = () => {
+    if (formData.additionalCompanions > 0) {
+      setFormData(prev => ({ 
+        ...prev, 
+        additionalCompanions: prev.additionalCompanions - 1 
+      }));
+    }
+  };
+
+  // Cálculo de preço atualizado
   const calculatePrice = () => {
-    const PRECO_UNITARIO = 70.0;
-    let valorTotal = PRECO_UNITARIO;
+    const PRECO_BASE = 70.0;
+    const PRECO_ACOMPANHANTE = 20.0;
+    
+    let valorTotal = PRECO_BASE + (formData.additionalCompanions * PRECO_ACOMPANHANTE);
     
     if (formData.paymentMethod === 'credit') {
       let taxaPercentual = 0;
@@ -74,7 +99,7 @@ function App() {
         taxaPercentual = 0.0399;
       }
       
-      valorTotal = PRECO_UNITARIO + (PRECO_UNITARIO * taxaPercentual) + taxaFixa;
+      valorTotal = valorTotal + (valorTotal * taxaPercentual) + taxaFixa;
     }
     
     const valorParcela = valorTotal / (parseInt(formData.installments) || 1);
@@ -103,21 +128,7 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsProcessing(true);
-  {/*  
-    try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      setInscriptionSuccess(true);
-      setTimeout(() => {
-        window.open('https://asaas.com/pay/sua-url-aqui', '_blank');
-      }, 2000);
-    } catch (error) {
-      console.error('Erro:', error);
-      alert('Erro ao processar inscrição. Tente novamente.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
- */}
+
     try {  
       // Enviar dados para o webhook do n8n
       const response = await fetch('https://webhook.escolaamadeus.com/webhook/diadospais', {
@@ -135,6 +146,7 @@ function App() {
           phone: formData.phone,
           paymentMethod: formData.paymentMethod,
           installments: formData.installments,
+          additionalCompanions: formData.additionalCompanions, // Incluir acompanhantes
           amount: valorTotal,
           timestamp: new Date().toISOString(),
           event: 'Passeio Game Station Partage'
@@ -230,15 +242,6 @@ function App() {
             >
               Saiba Mais
             </Button>
-            {/*
-            <Button 
-              size="lg" 
-              className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3"
-              onClick={showInscricaoForm}
-            >
-              Fazer Inscrição
-            </Button>
-            */}
           </div>
           <div className="mt-12 flex justify-center items-center space-x-8 text-sm">
             <div className="flex items-center">
@@ -249,12 +252,6 @@ function App() {
               <MapPin className="h-5 w-5 mr-2" />
               Ginásio do Conjunto Amarante, São Gonçalo do Amarante - RN
             </div>
-            {/* 
-            <div className="flex items-center">
-              <CreditCard className="h-5 w-5 mr-2" />
-              R$ 320,00
-            </div>
-            Sobre o Passeio */}
           </div>
         </div>
       </section>
@@ -346,38 +343,6 @@ function App() {
                 </p>
               </CardContent>
             </Card>
-
-            {/* 
-            <Card className="card-hover">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
-                  <Users className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle>Retorno</CardTitle>
-                <CardDescription>Refeição Completa</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-center">
-                  Almoço incluso no pacote em local a definir
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="card-hover">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 p-3 bg-accent/10 rounded-full w-fit">
-                  <Camera className="h-8 w-8 text-accent" />
-                </div>
-                <CardTitle>Tarde</CardTitle>
-                <CardDescription>Instituto Brennand</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-center">
-                  Visita completa ao instituto com guias especializados
-                </p>
-              </CardContent>
-            </Card>
-            */}
           </div>
 
           <div className="mt-12 text-center">
@@ -397,47 +362,7 @@ function App() {
             <p className="text-lg text-muted-foreground">
             </p>
           </div>
-          {/*
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="card-hover">
-              <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <FileText className="h-8 w-8 text-primary" />
-                  <div>
-                    <CardTitle>Ficha de Autorização</CardTitle>
-                    <CardDescription>Documento obrigatório</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm">
-                  <li>• Assinada pelo responsável legal</li>
-                  <li>• Será enviada separadamente</li>
-                  <li>• Entrega até 15 de agosto</li>
-                </ul>
-              </CardContent>
-            </Card>
 
-            <Card className="card-hover">
-              <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <CreditCard className="h-8 w-8 text-accent" />
-                  <div>
-                    <CardTitle>Comprovante de Pagamento</CardTitle>
-                    <CardDescription>Anexar à ficha</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-2 text-sm">
-                  <li>• Anexar junto com a ficha de autorização</li>
-                  <li>• Respeitar data limite de entrega</li>
-                  <li>• Manter cópia para controle</li>
-                </ul>
-              </CardContent>
-            </Card>
-          </div>
-          */}
           <div className="mt-8 p-6 bg-accent/10 rounded-lg border border-accent/20">
             <div className="flex items-start space-x-3">
               <Heart className="h-6 w-6 text-accent mt-1" />
@@ -452,66 +377,6 @@ function App() {
         </div>
       </section>
         
-      {/* Orientações Gerais 
-      <section id="orientacoes" className="section-padding bg-white">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Importante</h2>
-            <p className="text-lg text-muted-foreground">
-              Informações importantes para os alunos e responsáveis
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="card-hover">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
-                  <Users className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle>Uniforme</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-center mb-4">
-                  Uso obrigatório do fardamento completo da escola durante todo o passeio.
-                </p>
-                <Badge variant="outline" className="w-full justify-center">
-                  Obrigatório
-                </Badge>
-              </CardContent>
-            </Card>
-   
-            <Card className="card-hover">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 p-3 bg-accent/10 rounded-full w-fit">
-                  <Shield className="h-8 w-8 text-accent" />
-                </div>
-                <CardTitle>Kit de Viagem</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <ul className="text-sm space-y-1">
-                  <li>• Garrafinha de água reutilizável</li>
-                  <li>• Lanche (opcional)</li>
-                </ul>
-              </CardContent>
-            </Card>
-
-            <Card className="card-hover">
-              <CardHeader className="text-center">
-                <div className="mx-auto mb-4 p-3 bg-primary/10 rounded-full w-fit">
-                  <CheckCircle className="h-8 w-8 text-primary" />
-                </div>
-                <CardTitle>Cuidados</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-sm text-center">
-                  Manter-se sempre com o grupo e seguir as orientações dos professores durante toda o passeio.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-      */}
       {/* Custos e Pagamento */}
       <section id="custos" className="section-padding bg-white">
         <div className="container mx-auto max-w-4xl">
@@ -525,7 +390,13 @@ function App() {
           <Card className="mb-8">
             <CardHeader className="text-center">
               <CardTitle className="text-3xl text-primary">R$ 70,00</CardTitle>
-              <CardDescription>por aluno</CardDescription>
+              <CardDescription>por aluno (inclui pai, mãe e filho)</CardDescription>
+              <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+                <p className="text-sm text-blue-800">
+                  <UserPlus className="inline h-4 w-4 mr-1" />
+                  <strong>Acompanhantes adicionais:</strong> R$ 20,00 cada (até 5 pessoas)
+                </p>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="grid md:grid-cols-2 gap-6">
@@ -667,12 +538,12 @@ function App() {
                             <option value="1º Ano">1º Ano</option>
                             <option value="2º Ano">2º Ano</option>
                             <option value="3º Ano">3º Ano</option>
-                            <option value="3º Ano">4º Ano</option>
-                            <option value="3º Ano">5º Ano</option>
-                            <option value="3º Ano">6º Ano</option>
-                            <option value="3º Ano">7º Ano</option>
-                            <option value="3º Ano">8º Ano</option>
-                            <option value="3º Ano">9º Ano</option>
+                            <option value="4º Ano">4º Ano</option>
+                            <option value="5º Ano">5º Ano</option>
+                            <option value="6º Ano">6º Ano</option>
+                            <option value="7º Ano">7º Ano</option>
+                            <option value="8º Ano">8º Ano</option>
+                            <option value="9º Ano">9º Ano</option>
                           </select>
                         </div>
                         <div>
@@ -748,6 +619,66 @@ function App() {
                     </div>
                   </div>
 
+                  {/* Seção de Acompanhantes Adicionais */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4 flex items-center">
+                      <UserPlus className="mr-2 h-5 w-5" />
+                      Acompanhantes Adicionais
+                    </h3>
+                    <div className="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                      <p className="text-sm text-blue-800 mb-3">
+                        O pacote básico já inclui <strong>pai, mãe e filho</strong>. Você pode adicionar até 5 acompanhantes extras por apenas R$ 20,00 cada.
+                      </p>
+                      
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-4">
+                          <Label className="text-sm font-medium">Quantidade de acompanhantes adicionais:</Label>
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={decreaseCompanions}
+                              disabled={formData.additionalCompanions === 0}
+                            >
+                              <Minus className="h-4 w-4" />
+                            </Button>
+                            <span className="w-8 text-center font-semibold">
+                              {formData.additionalCompanions}
+                            </span>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="h-8 w-8 p-0"
+                              onClick={increaseCompanions}
+                              disabled={formData.additionalCompanions === 5}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                        
+                        {formData.additionalCompanions > 0 && (
+                          <div className="text-sm">
+                            <span className="text-green-600 font-medium">
+                              + R$ {(formData.additionalCompanions * 20).toFixed(2).replace('.', ',')}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      
+                      {formData.additionalCompanions > 0 && (
+                        <div className="mt-3 text-xs text-blue-700">
+                          <strong>Total de pessoas no evento:</strong> {3 + formData.additionalCompanions} pessoas
+                          <br />
+                          <strong>Composição:</strong> Aluno + Pai + Mãe + {formData.additionalCompanions} acompanhante{formData.additionalCompanions > 1 ? 's' : ''} adicional{formData.additionalCompanions > 1 ? 'is' : ''}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   {/* Método de Pagamento */}
                   <div>
                     <h3 className="text-lg font-semibold mb-4">Método de Pagamento*</h3>
@@ -771,7 +702,9 @@ function App() {
                           </div>
                           <div className="flex items-center space-x-2">
                             <span className="text-lg font-bold">PIX</span>
-                            <span className="text-sm">R$ 70,00 (sem taxas)</span>
+                            <span className="text-sm">
+                              R$ {(70 + (formData.additionalCompanions * 20)).toFixed(2).replace('.', ',')} (sem taxas)
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -812,7 +745,7 @@ function App() {
                           onChange={(e) => setFormData(prev => ({ ...prev, installments: parseInt(e.target.value) }))}
                           className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm mt-2"
                         >
-                          <option value={2}>1x de R$ {(valorTotal / 1).toFixed(2).replace('.', ',')}</option>
+                          <option value={1}>1x de R$ {(valorTotal / 1).toFixed(2).replace('.', ',')}</option>
                           <option value={2}>2x de R$ {(valorTotal / 2).toFixed(2).replace('.', ',')}</option>
                         </select>
                       </div>
@@ -828,6 +761,12 @@ function App() {
                         {formData.paymentMethod === 'credit' && formData.installments > 1 && (
                           <div className="text-sm text-orange-700 mt-1">
                             {formData.installments}x de R$ {valorParcela.toFixed(2).replace('.', ',')}
+                          </div>
+                        )}
+                        {formData.additionalCompanions > 0 && (
+                          <div className="text-xs text-orange-600 mt-2 border-t border-orange-200 pt-2">
+                            <div>Pacote básico: R$ 70,00</div>
+                            <div>Acompanhantes adicionais ({formData.additionalCompanions}x): R$ {(formData.additionalCompanions * 20).toFixed(2).replace('.', ',')}</div>
                           </div>
                         )}
                       </div>
@@ -888,27 +827,7 @@ function App() {
                 </p>
               </CardContent>
             </Card>
-           {/* 
-            <Card className="card-hover">
-              <CardHeader>
-                <div className="flex items-center space-x-3">
-                  <Mail className="h-8 w-8 text-accent" />
-                  <div>
-                    <CardTitle>E-mail</CardTitle>
-                    <CardDescription>Secretaria da escola</CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg font-semibold">secretaria@escola.com.br</p>
-                <p className="text-sm text-muted-foreground">
-                  Resposta em até 24 horas
-                </p>
-              </CardContent>
-            </Card>
           </div>
-         */}
-       </div>
           <div className="mt-8 text-center">
             <p className="text-sm text-muted-foreground">
               <strong>Coordenação Pedagógica</strong><br />
