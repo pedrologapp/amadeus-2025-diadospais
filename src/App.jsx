@@ -394,7 +394,7 @@ function App() {
               <div className="mt-4 p-3 bg-blue-50 rounded-lg">
                 <p className="text-sm text-blue-800">
                   <UserPlus className="inline h-4 w-4 mr-1" />
-                  <strong>Acompanhantes adicionais:</strong> R$ 20,00 cada (até 5 pessoas)
+                  <strong>Acompanhantes adicionais:</strong> R$ 20,00 cada 
                 </p>
               </div>
             </CardHeader>
@@ -857,4 +857,5 @@ function App() {
 }
 
 export default App;
+
 
