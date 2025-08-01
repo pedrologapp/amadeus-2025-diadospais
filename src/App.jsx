@@ -369,7 +369,7 @@ function App() {
               <div>
                 <h4 className="font-semibold text-accent mb-2"></h4>
                 <p className="text-sm">
-                  A mãe ou outro acompanhante poderá participar ao lado do pai, tornando o dia ainda mais completo!
+                  A mãe poderá participar ao lado do pai, tornando o dia ainda mais completo!
                 </p>
               </div>
             </div>
@@ -425,7 +425,7 @@ function App() {
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="h-4 w-4 text-accent mr-2" />
-                      A mãe ou outro acompanhante poderá participar ao lado do pai
+                      A mãe poderá participar ao lado do pai
                     </li>
                     <li className="flex items-center">
                       <CheckCircle className="h-4 w-4 text-accent mr-2" />
@@ -451,6 +451,10 @@ function App() {
                     <li className="flex items-start">
                       <Shield className="h-4 w-4 text-destructive mr-2 mt-0.5" />
                       O não comparecimento do aluno no dia do passeio, não acarretará em reembolso.
+                    </li>
+                    <li className="flex items-start">
+                      <Shield className="h-4 w-4 text-destructive mr-2 mt-0.5" />
+                      Lembrança e medalha, será somente para o pai. Os acompanhantes terão direito a fotos (juntamente com o pai), pipoca e algodão-doce, e claro, fazer parte desse dia especial junto à família.
                     </li>
                   </ul>
                 </div>
