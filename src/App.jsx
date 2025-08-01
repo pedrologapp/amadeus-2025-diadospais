@@ -176,7 +176,7 @@ function App() {
             <div className="mx-auto mb-4 p-3 bg-green-100 rounded-full w-fit">
               <CheckCircle className="h-8 w-8 text-green-600" />
             </div>
-            <CardTitle className="text-green-600">Inscrição Realizada!</CardTitle>
+            <CardTitle className="text-green-600">Aguarde!</CardTitle>
             <CardDescription>Redirecionando para o pagamento...</CardDescription>
           </CardHeader>
           <CardContent className="text-center">
