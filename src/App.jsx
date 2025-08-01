@@ -846,7 +846,7 @@ function App() {
                         Processando Inscrição...
                       </>
                     ) : (
-                      'FINALIZAR INSCRIÇÃO'
+                      'CONTINUAR PARA PAGAMENTO'
                     )}
                   </Button>
 
