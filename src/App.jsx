@@ -131,7 +131,7 @@ function App() {
 
     try {  
       // Enviar dados para o webhook do n8n
-      const response = await fetch('https://n8n.escolaamadeus.com/webhook-test/diadospais', {
+      const response = await fetch('https://webhook.escolaamadeus.com/webhook/diadospais', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -857,3 +857,4 @@ function App() {
 }
 
 export default App;
+
