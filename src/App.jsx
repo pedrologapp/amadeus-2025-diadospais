@@ -250,7 +250,7 @@ function App() {
             </div>
             <div className="flex items-center">
               <MapPin className="h-5 w-5 mr-2" />
-              Ginásio do Conjunto Amarante, São Gonçalo do Amarante - RN
+              Na Escola Amadeus, São Gonçalo do Amarante - RN
             </div>
           </div>
         </div>
@@ -276,7 +276,7 @@ function App() {
                 </div>
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
-                  <p>Competição Pais & Filhos - Reversamento de obstáculos, cabo de guerra e muito mais!</p>
+                  <p>Competição Pais & Filhos - Reversamento de obstáculos, brincadeiras e muito mais!</p>
                 </div>
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="h-6 w-6 text-accent mt-1 flex-shrink-0" />
@@ -325,7 +325,7 @@ function App() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-center">
-                  Chegada das famílias ao Ginásio do Conjunto Amarante. Recepção com pipoca e algodão-doce para começar a festa!
+                  Chegada das famílias na escola Amadeus. Recepção com pipoca e algodão-doce para começar a festa!
                 </p>
               </CardContent>
             </Card>
@@ -450,7 +450,7 @@ function App() {
                     </li>
                     <li className="flex items-start">
                       <Shield className="h-4 w-4 text-destructive mr-2 mt-0.5" />
-                      O não comparecimento do aluno no dia do passeio, não acarretará em reembolso.
+                      O não comparecimento do aluno no dia do evento, não acarretará em reembolso.
                     </li>
                     <li className="flex items-start">
                       <Shield className="h-4 w-4 text-destructive mr-2 mt-0.5" />
@@ -857,5 +857,6 @@ function App() {
 }
 
 export default App;
+
 
 
